@@ -29,7 +29,7 @@
     --max:1200px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;scroll-snap-type:y proximity;}
+  html{scroll-behavior:smooth;}
   body{
     background:var(--paper);color:var(--ink);
     font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;
@@ -86,7 +86,7 @@
   #hamburger.open span:nth-child(2){opacity:0;}
   #hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 
-  section{position:relative;z-index:1;padding:120px 0;scroll-snap-align:start;overflow:hidden;}
+  section{position:relative;z-index:1;padding:120px 0;overflow:hidden;}
   section:first-of-type{padding-top:0;}
   #about, #projects, #others{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;}
   .contact{min-height:100vh;min-height:100svh;display:flex;align-items:center;}
@@ -103,7 +103,7 @@
 
   .marquee{
     background:var(--ink);color:var(--paper);overflow:hidden;padding:22px 0;
-    white-space:nowrap;position:relative;z-index:1;scroll-snap-align:start;
+    white-space:nowrap;position:relative;z-index:1;
   }
   .marquee .track{display:inline-flex;animation:scroll-left 22s linear infinite;}
   .marquee .track span{
@@ -128,7 +128,7 @@
   .scribble path{stroke:var(--accent);stroke-width:2.5;fill:none;stroke-linecap:round;
     stroke-dasharray:40;stroke-dashoffset:40;animation:draw 1s ease-out .4s forwards;}
   @keyframes draw{to{stroke-dashoffset:0;}}
-  .hero h1{font-size:clamp(2.6rem,8.5vw,6.2rem);line-height:0.98;}
+  .hero h1{font-size:clamp(1.9rem,9.5vw,6.2rem);line-height:1.05;}
   .hero h1 .line{display:block;overflow:hidden;}
   .hero h1 .line span{display:inline-block;animation:riseIn .9s cubic-bezier(.2,.8,.2,1) both;}
   .hero h1 .line:nth-child(1) span{animation-delay:.15s;}
@@ -179,13 +179,6 @@
   .taglist span:nth-child(6){transition-delay:.3s;}
   .taglist span:nth-child(7){transition-delay:.35s;}
 
-  .floaty-wrap{position:absolute;pointer-events:none;z-index:0;will-change:transform;}
-  .floaty{
-    border-radius:50%;opacity:0.16;filter:blur(0.5px);display:block;
-  }
-  .floaty.square{border-radius:6px;}
-  .floaty.spin{animation:spin linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
 
   .section-head{margin-bottom:56px;}
   .section-head .eyebrow{
@@ -434,9 +427,8 @@
 
   <div class="wrap">
   <section id="about">
-    <span class="floaty-wrap" data-speed="0.15" style="top:8%;right:6%;"><span class="floaty spin" style="width:170px;height:170px;background:var(--manor);animation-duration:16s;"></span></span>
-    <span class="floaty-wrap" data-speed="-0.1" style="top:70%;left:4%;"><span class="floaty square spin" style="width:90px;height:90px;background:var(--trust);animation-duration:12s;"></span></span>
-    <span class="floaty-wrap" data-speed="0.22" style="top:35%;left:44%;opacity:.5;"><img class="floaty spin" style="width:70px;height:70px;animation-duration:26s;filter:invert(1);" src="data:image/png;base64,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" alt=""></span>
+
+
     <div class="section-head reveal">
       <div class="eyebrow">About</div>
       <h2>Built on paper first</h2>
@@ -537,8 +529,7 @@
 
   <div class="wrap">
   <section id="projects">
-    <span class="floaty-wrap" data-speed="0.2" style="top:10%;left:2%;"><span class="floaty square spin" style="width:130px;height:130px;background:var(--harmony);animation-duration:18s;"></span></span>
-    <span class="floaty-wrap" data-speed="-0.15" style="bottom:6%;right:4%;"><span class="floaty spin" style="width:160px;height:160px;background:var(--manor);animation-duration:15s;"></span></span>
+
     <div class="section-head reveal">
       <div class="eyebrow">Projects</div>
       <h2>Prototypes</h2>
@@ -566,10 +557,9 @@
   </section>
 
   <section id="others">
-    <span class="floaty-wrap" data-speed="0.12" style="top:12%;right:8%;"><span class="floaty spin" style="width:150px;height:150px;background:var(--trust);animation-duration:13s;"></span></span>
     <div class="section-head reveal">
       <div class="eyebrow">Other work</div>
-      <h2>Coursework & jams</h2>
+      <h2>Coursework & extras</h2>
     </div>
     <div class="rows">
       <div class="row">
@@ -589,16 +579,15 @@
       </div>
       <div class="row">
         <div class="num">10</div><h4>Flags</h4><div class="tool">HTML / CSS / JS</div>
-        <p>A Flagle clone built from scratch — alpha version.</p>
-        <span class="go">In progress</span>
+        <p>A Flagle clone built from scratch — playable right here.</p>
+        <a class="go" href="flags-game.html" rel="noopener">Play →</a>
       </div>
     </div>
   </section>
   </div>
 
   <section class="contact" id="contact">
-    <span class="floaty-wrap" data-speed="0.18" style="top:14%;left:6%;"><span class="floaty square spin" style="width:110px;height:110px;background:var(--harmony);animation-duration:16s;"></span></span>
-    <span class="floaty-wrap" data-speed="-0.12" style="bottom:8%;right:2%;"><span class="floaty spin" style="width:190px;height:190px;background:var(--trust);animation-duration:20s;"></span></span>
+
     <div class="wrap">
       <h2 class="reveal">Contact</h2>
       <a class="bigmail reveal" href="mailto:carlosmartinezdecelis@gmail.com">carlosmartinezdecelis@gmail.com →</a>
@@ -691,18 +680,12 @@
     });
   });
 
-  // parallax engine for floating shapes + game-shot tilt on scroll
+  // game-shot tilt on scroll
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const floaties = document.querySelectorAll('.floaty-wrap');
   const shots = document.querySelectorAll('.game-shot');
   let ticking = false;
   function applyParallax(){
     if(reduceMotion){ return; }
-    const y = window.scrollY;
-    floaties.forEach(el=>{
-      const speed = parseFloat(el.dataset.speed) || 0.1;
-      el.style.transform = `translateY(${y*speed}px)`;
-    });
     const vh = window.innerHeight;
     shots.forEach(el=>{
       const r = el.getBoundingClientRect();
