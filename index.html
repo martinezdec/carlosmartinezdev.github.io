@@ -7,7 +7,7 @@
 <meta name="description" content="Level Designer with shipped Steam titles and international studio experience.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#f6f1e7;
@@ -29,7 +29,7 @@
     --max:1200px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;scroll-snap-type:y proximity;}
   body{
     background:var(--paper);color:var(--ink);
     font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;
@@ -86,13 +86,33 @@
   #hamburger.open span:nth-child(2){opacity:0;}
   #hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 
-  section{position:relative;z-index:1;padding:120px 0;}
+  section{position:relative;z-index:1;padding:120px 0;scroll-snap-align:start;overflow:hidden;}
   section:first-of-type{padding-top:0;}
+  #about, #projects, #others{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;}
+  .contact{min-height:100vh;min-height:100svh;display:flex;align-items:center;}
+  .game-wall{min-height:100vh;min-height:100svh;display:flex;align-items:center;}
 
-  .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.8s cubic-bezier(.2,.8,.2,1),transform 0.8s cubic-bezier(.2,.8,.2,1);}
-  .reveal.visible{opacity:1;transform:translateY(0);}
+  .reveal{
+    opacity:0;transform:perspective(1400px) rotateX(6deg) translateY(34px) scale(0.98);
+    transition:opacity 0.9s cubic-bezier(.2,.8,.2,1),transform 0.9s cubic-bezier(.2,.8,.2,1);
+    transform-origin:center bottom;
+  }
+  .reveal.visible{opacity:1;transform:perspective(1400px) rotateX(0) translateY(0) scale(1);}
 
   /* HERO */
+
+  .marquee{
+    background:var(--ink);color:var(--paper);overflow:hidden;padding:22px 0;
+    white-space:nowrap;position:relative;z-index:1;scroll-snap-align:start;
+  }
+  .marquee .track{display:inline-flex;animation:scroll-left 22s linear infinite;}
+  .marquee .track span{
+    font-family:'Unbounded';font-size:1.6rem;padding:0 28px;flex-shrink:0;
+    display:inline-flex;align-items:center;gap:28px;
+  }
+  .marquee .track span.dim{opacity:0.4;}
+  @keyframes scroll-left{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
   .hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative;}
   .hero-mark{
     position:absolute;top:50%;right:-40px;transform:translateY(-50%);
@@ -159,6 +179,14 @@
   .taglist span:nth-child(6){transition-delay:.3s;}
   .taglist span:nth-child(7){transition-delay:.35s;}
 
+  .floaty-wrap{position:absolute;pointer-events:none;z-index:0;will-change:transform;}
+  .floaty{
+    border-radius:50%;opacity:0.16;filter:blur(0.5px);display:block;
+  }
+  .floaty.square{border-radius:6px;}
+  .floaty.spin{animation:spin linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
   .section-head{margin-bottom:56px;}
   .section-head .eyebrow{
     font-size:0.85rem;color:var(--accent);margin-bottom:12px;position:relative;
@@ -175,6 +203,15 @@
     background:var(--wall);color:var(--wallfg);
     padding:120px 0;transition:background 0.4s;
   }
+
+  .game-wall{position:relative;}
+  .game-wall::before, .game-wall::after{
+    content:"";position:absolute;left:0;width:100%;height:70px;background:var(--paper);
+    z-index:5;pointer-events:none;
+  }
+  .game-wall::before{top:-1px;clip-path:polygon(0 0,100% 0,100% 100%,0 45%);}
+  .game-wall::after{bottom:-1px;clip-path:polygon(0 55%,100% 0,100% 100%,0 100%);}
+
   .game-inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;width:100%;}
   .game-section.rev .game-inner{direction:rtl;}
   .game-section.rev .game-inner > *{direction:ltr;}
@@ -190,6 +227,13 @@
     transform-origin:left;transition:transform 1.05s cubic-bezier(.76,0,.24,1);z-index:2;}
   .game-shot.visible img{transform:scale(1);}
   .game-shot.visible::after{transform:scaleX(0);}
+
+  .ghost-num{
+    position:absolute;top:-0.3em;left:-0.05em;font-family:'Unbounded';font-weight:800;
+    font-size:clamp(6rem,18vw,13rem);line-height:1;color:var(--wallfg);opacity:0.1;
+    z-index:0;pointer-events:none;user-select:none;
+  }
+
   .game-tag{display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;
     text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;opacity:0.85;}
   .game-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--wallfg);}
@@ -206,6 +250,35 @@
   .linkarrow .arrow{transition:transform .35s cubic-bezier(.2,.8,.2,1);display:inline-block;}
   .linkarrow:hover{opacity:0.7;}
   .linkarrow:hover .arrow{transform:translateX(6px);}
+
+  .commentary-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;
+    border:1.5px solid var(--wallfg);background:transparent;color:var(--wallfg);
+    margin-bottom:14px;position:relative;flex-shrink:0;
+    transition:background .3s,transform .3s;
+  }
+  .commentary-btn::before{
+    content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--wallfg);
+    opacity:0;animation:pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse{0%{opacity:.5;transform:scale(0.85);}100%{opacity:0;transform:scale(1.35);}}
+  .commentary-btn:hover{transform:scale(1.1);}
+  .commentary-btn.open{background:var(--wallfg);color:var(--wall);}
+  .commentary-btn svg{width:16px;height:16px;}
+  .commentary-row{display:flex;align-items:center;gap:12px;}
+  .commentary-note{
+    font-family:'Caveat',cursive;font-size:1.35rem;line-height:1.35;
+    max-width:420px;max-height:0;opacity:0;overflow:hidden;
+    transition:max-height .5s cubic-bezier(.2,.8,.2,1),opacity .4s,margin .5s;
+    margin-top:0;
+  }
+  .commentary-note.open{max-height:160px;opacity:1;margin-top:4px;margin-bottom:6px;}
+  .commentary-note .tape{
+    display:inline-block;transform:rotate(-1deg);padding:10px 16px 12px;
+    background:rgba(255,255,255,0.14);border-left:3px solid var(--wallfg);
+  }
+  #manor .commentary-note .tape{background:rgba(33,29,23,0.08);}
 
   #manor .game-wall{--wall:var(--manor);--wallfg:var(--manor-fg);}
   #trust .game-wall{--wall:var(--trust);--wallfg:var(--trust-fg);}
@@ -282,12 +355,33 @@
     .hero-mark{animation:none;}
     html{scroll-behavior:auto;}
   }
+
+  header.top nav a, .footlinks a{display:inline-block;transition:color .3s, transform .3s;}
+  header.top nav a:hover, .footlinks a:hover{transform:skewX(-6deg) translateY(-1px);}
+  .game-section h3, .card h4, .row h4{transition:transform .3s;display:inline-block;}
+  .game-section h3:hover{transform:skewX(-2deg) scale(1.02);}
+
   a:focus-visible, button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;}
+
+  body{cursor:none;}
+  #cursor{
+    position:fixed;top:0;left:0;width:22px;height:22px;border-radius:50%;
+    border:1.5px solid var(--ink);pointer-events:none;z-index:200;
+    transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s,border-color .25s,opacity .2s;
+    mix-blend-mode:difference;
+  }
+  #cursor.big{width:52px;height:52px;background:var(--ink);}
+  @media (max-width:900px), (hover:none){
+    body{cursor:auto;}
+    #cursor{display:none;}
+  }
+
 </style>
 </head>
 <body>
 
 <div id="progress"></div>
+<div id="cursor"></div>
 
 <header class="top">
   <a href="#hero" class="mark" aria-label="Home">
@@ -329,8 +423,20 @@
     </div>
     <div class="scrollhint"><span class="stick"></span> Scroll</div>
   </section>
+  </div>
 
+  <div class="marquee">
+    <div class="track">
+      <span>LEVEL DESIGN <span class="dim">◆</span> GAME DESIGN <span class="dim">◆</span> UNREAL ENGINE <span class="dim">◆</span> UNITY <span class="dim">◆</span> BLOCKOUTS <span class="dim">◆</span> QA <span class="dim">◆</span></span>
+      <span>LEVEL DESIGN <span class="dim">◆</span> GAME DESIGN <span class="dim">◆</span> UNREAL ENGINE <span class="dim">◆</span> UNITY <span class="dim">◆</span> BLOCKOUTS <span class="dim">◆</span> QA <span class="dim">◆</span></span>
+    </div>
+  </div>
+
+  <div class="wrap">
   <section id="about">
+    <span class="floaty-wrap" data-speed="0.15" style="top:8%;right:6%;"><span class="floaty spin" style="width:170px;height:170px;background:var(--manor);animation-duration:16s;"></span></span>
+    <span class="floaty-wrap" data-speed="-0.1" style="top:70%;left:4%;"><span class="floaty square spin" style="width:90px;height:90px;background:var(--trust);animation-duration:12s;"></span></span>
+    <span class="floaty-wrap" data-speed="0.22" style="top:35%;left:44%;opacity:.5;"><img class="floaty spin" style="width:70px;height:70px;animation-duration:26s;filter:invert(1);" src="data:image/png;base64,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" alt=""></span>
     <div class="section-head reveal">
       <div class="eyebrow">About</div>
       <h2>Built on paper first</h2>
@@ -352,14 +458,45 @@
 
   <div id="games"></div>
 
-  <section class="game-section" id="manor">
+  <section class="game-section" id="trust">
+    <div class="game-wall">
+      <div class="wrap">
+        <div class="game-inner">
+          <div class="game-shot reveal-img"><div class="inner"><img src="https://static.wixstatic.com/media/0476fa_19c97f375d1c47039ef9326f02303c0d~mv2.png" alt="TRUST demo screenshot"></div></div>
+          <div class="reveal" style="position:relative;">
+            <span class="ghost-num">01</span>
+            <div class="game-tag"><span class="dot"></span>First-person puzzle</div>
+            <div class="commentary-row">
+              <h3>TRUST demo</h3>
+              <button class="commentary-btn" data-note="note-trust" aria-label="Developer commentary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.97-4.03 9-9 9-1.6 0-3.1-.42-4.4-1.16L3 21l1.24-3.72C3.45 15.9 3 14.5 3 13c0-4.97 4.03-9 9-9s9 4.03 9 8z"/></svg>
+              </button>
+            </div>
+            <div class="commentary-note" id="note-trust"><span class="tape">This one's closest to my own taste. I designed every inch of the pyramid biome myself — mistakes included, some of them still in there.</span></div>
+            <div class="kind">Solo project · 15-minute demo</div>
+            <p class="desc">A first-person puzzle set in a small, abandoned world split into biomes. No name, no answers — just a reason to keep exploring.</p>
+            <a class="linkarrow" href="https://store.steampowered.com/app/4193820/Trust_Demo/" target="_blank" rel="noopener">Play the demo <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="game-section rev" id="manor">
     <div class="game-wall">
       <div class="wrap">
         <div class="game-inner">
           <div class="game-shot reveal-img"><div class="inner"><img src="https://static.wixstatic.com/media/0476fa_23519bc6e4724e0cba70c318b982f3f9~mv2.png" alt="Shelley Manor screenshot"></div></div>
-          <div>
+          <div class="reveal" style="position:relative;">
+            <span class="ghost-num">02</span>
             <div class="game-tag"><span class="dot"></span>Third-person puzzle</div>
-            <h3>Shelley Manor</h3>
+            <div class="commentary-row">
+              <h3>Shelley Manor</h3>
+              <button class="commentary-btn" data-note="note-manor" aria-label="Developer commentary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.97-4.03 9-9 9-1.6 0-3.1-.42-4.4-1.16L3 21l1.24-3.72C3.45 15.9 3 14.5 3 13c0-4.97 4.03-9 9-9s9 4.03 9 8z"/></svg>
+              </button>
+            </div>
+            <div class="commentary-note" id="note-manor"><span class="tape">The tightest puzzle room went through three redesigns. Turns out, when there's a monster behind you, players just want to run — not think.</span></div>
             <div class="kind">Unreal Engine 5.2.1 · Tiny Terrors Studio</div>
             <p class="desc">A puzzle-filled manor, and monsters with an appetite for humans. Escape the teeth, make a few friends along the way. Built with Tiny Terrors Studio — I designed.</p>
             <div class="awards">
@@ -374,31 +511,21 @@
     </div>
   </section>
 
-  <section class="game-section rev" id="trust">
-    <div class="game-wall">
-      <div class="wrap">
-        <div class="game-inner">
-          <div class="game-shot reveal-img"><div class="inner"><img src="https://static.wixstatic.com/media/0476fa_19c97f375d1c47039ef9326f02303c0d~mv2.png" alt="TRUST demo screenshot"></div></div>
-          <div>
-            <div class="game-tag"><span class="dot"></span>First-person puzzle</div>
-            <h3>TRUST demo</h3>
-            <div class="kind">Solo project · 15-minute demo</div>
-            <p class="desc">A first-person puzzle set in a small, abandoned world split into biomes. No name, no answers — just a reason to keep exploring.</p>
-            <a class="linkarrow" href="https://store.steampowered.com/app/4193820/Trust_Demo/" target="_blank" rel="noopener">Play the demo <span class="arrow">→</span></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="game-section" id="harmony">
     <div class="game-wall">
       <div class="wrap">
         <div class="game-inner">
           <div class="game-shot reveal-img"><div class="inner"><img src="https://static.wixstatic.com/media/0476fa_cbdfef2e554747f1b2a820038965f8bc~mv2.png" alt="Harmony in the Wild screenshot"></div></div>
-          <div>
+          <div class="reveal" style="position:relative;">
+            <span class="ghost-num">03</span>
             <div class="game-tag"><span class="dot"></span>Cozy adventure</div>
-            <h3>Harmony in the Wild</h3>
+            <div class="commentary-row">
+              <h3>Harmony in the Wild</h3>
+              <button class="commentary-btn" data-note="note-harmony" aria-label="Developer commentary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.97-4.03 9-9 9-1.6 0-3.1-.42-4.4-1.16L3 21l1.24-3.72C3.45 15.9 3 14.5 3 13c0-4.97 4.03-9 9-9s9 4.03 9 8z"/></svg>
+              </button>
+            </div>
+            <div class="commentary-note" id="note-harmony"><span class="tape">First time designing for someone else's vision instead of my own. Learned more about restraint here than in anything I'd built solo.</span></div>
             <div class="kind">Unity · Lumo Creations, Finland</div>
             <p class="desc">The balance of nature rests in the paws of a shape-shifting fox. Learn from animal friends, explore magical landscapes, solve what stands in your way. I built the world and its levels.</p>
             <a class="linkarrow" href="https://store.steampowered.com/app/3360850/Harmony_in_the_Wild/" target="_blank" rel="noopener">Play on Steam <span class="arrow">→</span></a>
@@ -410,6 +537,8 @@
 
   <div class="wrap">
   <section id="projects">
+    <span class="floaty-wrap" data-speed="0.2" style="top:10%;left:2%;"><span class="floaty square spin" style="width:130px;height:130px;background:var(--harmony);animation-duration:18s;"></span></span>
+    <span class="floaty-wrap" data-speed="-0.15" style="bottom:6%;right:4%;"><span class="floaty spin" style="width:160px;height:160px;background:var(--manor);animation-duration:15s;"></span></span>
     <div class="section-head reveal">
       <div class="eyebrow">Projects</div>
       <h2>Prototypes</h2>
@@ -437,6 +566,7 @@
   </section>
 
   <section id="others">
+    <span class="floaty-wrap" data-speed="0.12" style="top:12%;right:8%;"><span class="floaty spin" style="width:150px;height:150px;background:var(--trust);animation-duration:13s;"></span></span>
     <div class="section-head reveal">
       <div class="eyebrow">Other work</div>
       <h2>Coursework & jams</h2>
@@ -467,6 +597,8 @@
   </div>
 
   <section class="contact" id="contact">
+    <span class="floaty-wrap" data-speed="0.18" style="top:14%;left:6%;"><span class="floaty square spin" style="width:110px;height:110px;background:var(--harmony);animation-duration:16s;"></span></span>
+    <span class="floaty-wrap" data-speed="-0.12" style="bottom:8%;right:2%;"><span class="floaty spin" style="width:190px;height:190px;background:var(--trust);animation-duration:20s;"></span></span>
     <div class="wrap">
       <h2 class="reveal">Contact</h2>
       <a class="bigmail reveal" href="mailto:carlosmartinezdecelis@gmail.com">carlosmartinezdecelis@gmail.com →</a>
@@ -485,6 +617,19 @@
 </main>
 
 <script>
+  // custom cursor
+  const cursor = document.getElementById('cursor');
+  if(cursor && window.matchMedia('(hover:hover)').matches){
+    document.addEventListener('mousemove', (e)=>{
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button').forEach(el=>{
+      el.addEventListener('mouseenter', ()=>cursor.classList.add('big'));
+      el.addEventListener('mouseleave', ()=>cursor.classList.remove('big'));
+    });
+  }
+
   const progress = document.getElementById('progress');
   function updateProgress(){
     const h = document.documentElement;
@@ -536,6 +681,43 @@
       setTimeout(()=>ripple.remove(), 650);
     });
   });
+
+  document.querySelectorAll('.commentary-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const note = document.getElementById(btn.dataset.note);
+      const willOpen = !btn.classList.contains('open');
+      btn.classList.toggle('open', willOpen);
+      note.classList.toggle('open', willOpen);
+    });
+  });
+
+  // parallax engine for floating shapes + game-shot tilt on scroll
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const floaties = document.querySelectorAll('.floaty-wrap');
+  const shots = document.querySelectorAll('.game-shot');
+  let ticking = false;
+  function applyParallax(){
+    if(reduceMotion){ return; }
+    const y = window.scrollY;
+    floaties.forEach(el=>{
+      const speed = parseFloat(el.dataset.speed) || 0.1;
+      el.style.transform = `translateY(${y*speed}px)`;
+    });
+    const vh = window.innerHeight;
+    shots.forEach(el=>{
+      const r = el.getBoundingClientRect();
+      const centerOffset = (r.top + r.height/2 - vh/2) / vh;
+      const rotate = centerOffset * -6;
+      el.style.transform = `rotate(${rotate}deg)`;
+    });
+    ticking = false;
+  }
+  if(!reduceMotion){
+    document.addEventListener('scroll', ()=>{
+      if(!ticking){ requestAnimationFrame(applyParallax); ticking = true; }
+    });
+    applyParallax();
+  }
 
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
